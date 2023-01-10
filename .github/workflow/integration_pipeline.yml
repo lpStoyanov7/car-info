@@ -1,0 +1,24 @@
+name: Integration (Automatic)
+
+on: [push]
+ on:
+ push:
+   branches: [main, release/**, develop-*]
+ pull_request:
+   types: [opened, synchronize, reopened]
+   branches: [main, release/**, develop-*]
+
+jobs:
+ # Code
+ editorconfig-check:
+   name: .editorconfig lint
+   runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v2
+     - uses: editorconfig-checker/action-editorconfig-checker@v1
+ markdown-lint:
+   name: markdown lint
+   runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v2
+     - run: npx markdownlint-cli **/*.md
