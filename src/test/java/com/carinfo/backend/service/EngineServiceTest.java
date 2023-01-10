@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -22,10 +21,9 @@ public class EngineServiceTest {
 	private EngineRepository engineRepository;
 
 	@Test
-	public void getEngines_getAllEngines_repositoryInvoked(){
+	public void getEngines_getAllEngines_repositoryInvoked() {
 
 		engineService.getEngines();
 		verify(engineRepository).getAllEngines();
 	}
-
 }
