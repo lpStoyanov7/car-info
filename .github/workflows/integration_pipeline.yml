@@ -39,12 +39,12 @@ jobs:
         run: mvn clean install -Dmaven.test.skip=true
 
       - name: Upload JAR
-          uses: actions/upload-artifact@v3
-          with:
-            name: jar-artifact
-            path: target/*.jar
-            if-no-files-found: error
-            retention-days: 1
+        uses: actions/upload-artifact@v3
+        with:
+          name: jar-artifact
+          path: target/*.jar
+          if-no-files-found: error
+          retention-days: 1
 
   # push to registry
   push_to_registry:
