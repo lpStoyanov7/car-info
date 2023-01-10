@@ -1,7 +1,8 @@
 name: Integration (Automatic)
 
-on: [ push ]
-  branches: [ main, release/**, develop-* ]
+on:
+  push:
+    branches: [ main, release/**, develop-* ]
 # pull_request:
 #   types: [opened, synchronize, reopened]
 #   branches: [main, release/**, develop-*]
