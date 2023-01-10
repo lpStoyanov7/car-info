@@ -12,10 +12,9 @@
  */
 package com.carinfo.backend.model;
 
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 /**
  * @author stoystbg
@@ -24,7 +23,7 @@ import java.time.LocalDate;
 @Setter
 public class Manufacturer {
 
-	private String name;
-	private LocalDate year;
-	private String country;
+  private String name;
+  private LocalDate year;
+  private String country;
 }

@@ -14,10 +14,9 @@ package com.carinfo.backend.service;
 
 import com.carinfo.backend.model.Engine;
 import com.carinfo.backend.repository.EngineRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @author stoystbg
@@ -26,10 +25,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EngineService {
 
-	private final EngineRepository engineRepository;
+  private final EngineRepository engineRepository;
 
-	public List<Engine> getEngines() {
+  public List<Engine> getEngines() {
 
-		return engineRepository.getAllEngines();
-	}
+    return engineRepository.getAllEngines();
+  }
 }

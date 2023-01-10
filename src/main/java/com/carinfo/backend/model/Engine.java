@@ -24,8 +24,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Engine {
 
-	private int id;
-	private int power;
-	private int capacity;
-	private String name;
+  private int id;
+  private int power;
+  private int capacity;
+  private String name;
 }

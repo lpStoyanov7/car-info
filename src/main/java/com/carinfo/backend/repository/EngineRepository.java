@@ -13,10 +13,8 @@
 package com.carinfo.backend.repository;
 
 import com.carinfo.backend.model.Engine;
-import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author stoystbg
@@ -24,28 +22,28 @@ import java.util.List;
 @Repository
 public class EngineRepository {
 
-	private static List<Engine> list;
+  private static List<Engine> list;
 
 
-	static {
-		list = List.of(
-				new Engine(1,100, 1600, "FSHFFF23"),
-				new Engine(2,200, 2000, "YYY21"),
-				new Engine(3, 300,  2500, "31S224")
-		);
-	}
+  static {
+    list = List.of(
+        new Engine(1, 100, 1600, "FSHFFF23"),
+        new Engine(2, 200, 2000, "YYY21"),
+        new Engine(3, 300, 2500, "31S224")
+    );
+  }
 
 
-	public List<Engine> getAllEngines() {
-		return list;
-	}
+  public List<Engine> getAllEngines() {
+    return list;
+  }
 
-	public Engine findById(int id){
-		for (int i = 0; i < list.size(); i++) {
-			if (list.get(i).getId() == (id)) {
-				return list.get(i);
-			}
-		}
-		return null;
-	}
+  public Engine findById(int id) {
+    for (int i = 0; i < list.size(); i++) {
+      if (list.get(i).getId() == (id)) {
+        return list.get(i);
+      }
+    }
+    return null;
+  }
 }
