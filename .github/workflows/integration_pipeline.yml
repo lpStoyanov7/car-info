@@ -43,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: car-info-0.0.1-SNAPSHOT
-          path: target/*.jar
+          path: target
           if-no-files-found: error
           retention-days: 1
 
