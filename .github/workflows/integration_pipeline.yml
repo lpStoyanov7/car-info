@@ -42,7 +42,7 @@ jobs:
       - name: Upload JAR
         uses: actions/upload-artifact@v3
         with:
-          name: car-info-0.0.1-SNAPSHOT
+          name: jar-artifact
           path: target/*.jar
           if-no-files-found: error
           retention-days: 1
@@ -69,6 +69,12 @@ jobs:
           images: ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}
           tags: |
             type=sha,format=long
+
+      - name: Download Build Artifacts
+          uses: actions/download-artifact@v1
+          with:
+            name: jar-artifact
+            path: target/
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
