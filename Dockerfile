@@ -1,7 +1,8 @@
-FROM openjdk:11
+FROM adoptopenjdk/openjdk11:ubi
 
-ADD target/car-info-0.0.1-SNAPSHOT.jar /usr/local/car-info/car-info.jar
+RUN mkdir /opt/test
+ADD target/car-info-0.0.1-SNAPSHOT.jar /opt/test/car-info.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","/usr/local/car-info/car-info.jar"]
+ENTRYPOINT ["java","-jar","/opt/test/car-info.jar"]
