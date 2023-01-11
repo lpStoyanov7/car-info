@@ -43,8 +43,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: car-info-0.0.1-SNAPSHOT
-#          path: target/*.jar
-          path:  ${{ github.workspace }}/car-info/target/*.jar
+          path: target/*.jar
           if-no-files-found: error
           retention-days: 1
 
