@@ -71,10 +71,10 @@ jobs:
             type=sha,format=long
 
       - name: Download Build Artifacts
-          uses: actions/download-artifact@v1
-          with:
-            name: jar-artifact
-            path: target/
+        uses: actions/download-artifact@v1
+        with:
+          name: jar-artifact
+          path: target/
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
