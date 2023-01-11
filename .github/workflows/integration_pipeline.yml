@@ -36,12 +36,13 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Build with Maven
-        run: mvn clean install -Dmaven.test.skip=true
+        run: |
+        mvn clean install -Dmaven.test.skip=true
 
       - name: Upload JAR
         uses: actions/upload-artifact@v3
         with:
-          name: jar-artifact
+          name: car-info-0.0.1-SNAPSHOT
           path: target/*.jar
           if-no-files-found: error
           retention-days: 1
