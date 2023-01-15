@@ -12,7 +12,7 @@ jobs:
   editorconfig-check:
     name: .editorconfig lint
     runs-on: ubuntu-latest
-      steps:
+    steps:
       - uses: actions/checkout@v2
       - uses: editorconfig-checker/action-editorconfig-checker@v1
 
