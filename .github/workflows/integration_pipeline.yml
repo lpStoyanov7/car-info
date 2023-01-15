@@ -95,25 +95,52 @@ jobs:
           severity: "CRITICAL,HIGH"
 
   # Deploy
-#  deploy:
-#    needs: [push-to-registry]
-#    runs-on: ubuntu-latest
-#    outputs:
-#      service-url: ${{ steps.deploy-apprunner.outputs.service-url }}
-#
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#        with:
-#          persist-credentials: false
-#
-#      - name: Configure AWS credentials
-#        id: aws-credentials
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: eu-west-1
+  deploy:
+    needs: [push-to-registry]
+    runs-on: ubuntu-latest
+    outputs:
+      service-url: ${{ steps.deploy-apprunner.outputs.service-url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Configure AWS credentials
+        id: aws-credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      # The following command will update the kube config file with our cluster information.
+      # It will use the credentials exported by the previous action.
+      - name: Update KubeConfig
+        shell: bash
+        run: |
+          aws eks update-kubeconfig --name carinfo-cluster --region=eu-west-1
+
+      # Deploy newly built changes to EKS cluster.
+      - name: Deploy To Cluster
+        shell: bash
+        run: |
+          kubectl apply -f eks/deployment.yml
+          kubectl apply -f eks/service.yml
+
+#      - name: deploy to cluster
+#          uses: kodermax/kubectl-aws-eks@master
+#          env:
+#            KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_STAGING }}
+#            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#            ECR_REPOSITORY: my-app
+#            IMAGE_TAG: ${{ github.sha }
+#          with:
+#            args: set image deployment/$ECR_REPOSITORY $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+
+
 
 #      - name: Login to Amazon ECR
 #        id: login-ecr

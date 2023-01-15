@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: carinfo
-          image: lpstoyanov/car-info:sha-6c6cf16522467fe4c87ef632d705470b51e9cf5b
+          image: lpstoyanov/car-info:sha-74d1117ce158972aa3951fa88e016cb05ad024a8
           ports:
             - containerPort: 8080
