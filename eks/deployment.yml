@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: carinfo
+spec:
+  selector:
+    matchLabels:
+      app: carinfo
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: carinfo
+    spec:
+      containers:
+        - name: carinfo
+          image: lpstoyanov/car-info:sha-6c6cf16522467fe4c87ef632d705470b51e9cf5b
+          ports:
+            - containerPort: 8080
