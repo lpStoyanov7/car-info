@@ -139,14 +139,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
 
-      - uses: swdotcom/update-and-apply-kubernetes-configs@v1
-        with:
-          k8-config-file-paths: kubernetes/deployment.yml kubernetes/service.yml
-          replacement-method: list
-          env-replacement-list: |
-            IMAGE_KEY
-        env:
-          IMAGE_KEY: lpstoyanov/car-info:sha-74d1117ce158972aa3951fa88e016cb05ad024a8
+#      - uses: swdotcom/update-and-apply-kubernetes-configs@v1
+#        with:
+#          k8-config-file-paths: kubernetes/service.yml kubernetes/deployment.yml
+#          replacement-method: list
+#          env-replacement-list: |
+#            IMAGE_KEY
+#        env:
+#          IMAGE_KEY: lpstoyanov/car-info:sha-74d1117ce158972aa3951fa88e016cb05ad024a8
 
 
       # The following command will update the kube config file with our cluster information.
