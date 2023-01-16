@@ -38,10 +38,11 @@ jobs:
       - name: Maven test
         run: mvn -B test
       - name: Test Report
-        uses: dorny/test-reporter@0d00bb14cb0cc2c9b8985df6e81dd333188224e1
+        uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
           name: JUnit Tests
+          artifact: jar-artifact
           path: target/surefire-reports/*.xml
           reporter: java-junit
 
