@@ -26,7 +26,7 @@ jobs:
   unit_tests:
     name: Quality check
     runs-on: java-11
-    needs: [ preparation ]
+#    needs: [ editorconfig-check, markdown-lint ]
 
     steps:
       - name: Checkout
