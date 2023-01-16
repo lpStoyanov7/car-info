@@ -1,5 +1,6 @@
 package com.carinfo.backend.service;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 
 import com.carinfo.backend.repository.EngineRepository;
@@ -25,5 +26,12 @@ public class EngineServiceTest {
 
     engineService.getEngines();
     verify(engineRepository).getAllEngines();
+  }
+
+  @Test
+  public void getById_givenId_repositoryMethodInvoked() {
+
+    engineService.getById(3);
+    verify(engineRepository).findById(anyInt());
   }
 }
