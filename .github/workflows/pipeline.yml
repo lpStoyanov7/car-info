@@ -144,9 +144,9 @@ jobs:
           k8-config-file-paths: kubernetes/deployment.yml kubernetes/service.yml
           replacement-method: list
           env-replacement-list: |
-            IMAGE
+            IMAGE_KEY
         env:
-          IMAGE: lpstoyanov/car-info:sha-74d1117ce158972aa3951fa88e016cb05ad024a8
+          IMAGE_KEY: lpstoyanov/car-info:sha-74d1117ce158972aa3951fa88e016cb05ad024a8
 
 
       # The following command will update the kube config file with our cluster information.
