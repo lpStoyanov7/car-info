@@ -23,7 +23,7 @@ create table tbl_car
     constraint fk_car_engine
         foreign key (engine_id)
             REFERENCES tbl_engine (id),
-    constraint fk_car_manufacturer
+    constraint fk_car_manufacturer4
         foreign key (manufacturer_id)
             REFERENCES tbl_manufacturer (id)
 );
