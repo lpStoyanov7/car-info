@@ -43,7 +43,7 @@ jobs:
           url: jdbc:postgresql://postgres:5432/db
           user: user
           password: password
-      - run: echo 'testing'
+
 #  unit_tests:
 #    name: Quality check
 #    runs-on: ubuntu-latest
@@ -186,7 +186,6 @@ jobs:
 
   webhook:
 #      needs: [ editorconfig-check, markdown-lint ]
-    needs: [ check_db_scripts ]
     name: Sending MS Teams Notification
     runs-on: ubuntu-latest
     steps:
