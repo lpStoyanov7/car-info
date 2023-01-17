@@ -23,7 +23,8 @@ import lombok.Setter;
 @Setter
 public class Manufacturer {
 
+  private int id;
   private String name;
-  private LocalDate year;
+  private LocalDate yearOfFounding;
   private String country;
 }

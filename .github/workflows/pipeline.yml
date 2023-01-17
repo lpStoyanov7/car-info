@@ -1,4 +1,4 @@
-name: Integration (Automatic)
+name: Pipeline
 
 on:
   push:
@@ -8,21 +8,42 @@ on:
 #   branches: [main, release/**, develop-*]
 
 jobs:
-  # Code
-    editorconfig-check:
-      name: .editorconfig lint
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
-        - uses: editorconfig-checker/action-editorconfig-checker@v1
-
-    markdown-lint:
-      name: markdown lint
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
-        - run: npx markdownlint-cli **/*.md
-
+#  # Code
+#    editorconfig-check:
+#      name: .editorconfig lint
+#      runs-on: ubuntu-latest
+#      steps:
+#        - uses: actions/checkout@v2
+#        - uses: editorconfig-checker/action-editorconfig-checker@v1
+#
+#    markdown-lint:
+#      name: markdown lint
+#      runs-on: ubuntu-latest
+#      steps:
+#        - uses: actions/checkout@v2
+#        - run: npx markdownlint-cli **/*.md
+  check_db_scripts:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: db
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+      - uses: joshuaavalon/flyway-action@v3.0.0
+        with:
+          url: jdbc:postgresql://postgres:5432/db
+          user: user
+          password: password
+      - run: echo 'testing'
 #  unit_tests:
 #    name: Quality check
 #    runs-on: ubuntu-latest
@@ -164,7 +185,8 @@ jobs:
 #          kubectl apply -f kubernetes/service.yml
 
     webhook:
-      needs: [ editorconfig-check, markdown-lint ]
+#      needs: [ editorconfig-check, markdown-lint ]
+      needs: [ check_db_scripts ]
       name: Sending MS Teams Notification
       runs-on: ubuntu-latest
       steps:
@@ -177,3 +199,4 @@ jobs:
             needs: ${{ toJson(needs) }}
             job: ${{ toJson(job) }}
             steps: ${{ toJson(steps) }}
+#            overwrite: "{title: `Overwrote title in ${workflow_link}`}"

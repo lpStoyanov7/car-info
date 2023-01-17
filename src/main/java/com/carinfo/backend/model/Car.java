@@ -23,6 +23,7 @@ import lombok.Setter;
 @Setter
 public class Car {
 
+  private int id;
   private Engine engine;
   private Manufacturer manufacturer;
   private LocalDate year;
