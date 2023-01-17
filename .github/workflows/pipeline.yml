@@ -184,19 +184,19 @@ jobs:
 #          kubectl apply -f kubernetes/deployment.yml
 #          kubectl apply -f kubernetes/service.yml
 
-    webhook:
+  webhook:
 #      needs: [ editorconfig-check, markdown-lint ]
-      needs: [ check_db_scripts ]
-      name: Sending MS Teams Notification
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@master
-        - name: Microsoft Teams Notification
-          uses: skitionek/notify-microsoft-teams@master
-          if: always()
-          with:
-            webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
-            needs: ${{ toJson(needs) }}
-            job: ${{ toJson(job) }}
-            steps: ${{ toJson(steps) }}
+    needs: [ check_db_scripts ]
+    name: Sending MS Teams Notification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Microsoft Teams Notification
+        uses: skitionek/notify-microsoft-teams@master
+        if: always()
+        with:
+          webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
+          needs: ${{ toJson(needs) }}
+          job: ${{ toJson(job) }}
+          steps: ${{ toJson(steps) }}
 #            overwrite: "{title: `Overwrote title in ${workflow_link}`}"
