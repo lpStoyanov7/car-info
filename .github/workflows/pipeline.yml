@@ -164,12 +164,13 @@ jobs:
 #          kubectl apply -f kubernetes/service.yml
 
     webhook:
-        name: Sending MS Teams Notification
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@master
-          - name: Microsoft Teams Notification
-            uses: skitionek/notify-microsoft-teams@master
-            if: always()
-            with:
-              webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
+      needs: [ editorconfig-check, markdown-lint ]
+      name: Sending MS Teams Notification
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@master
+        - name: Microsoft Teams Notification
+          uses: skitionek/notify-microsoft-teams@master
+          if: always()
+          with:
+            webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
