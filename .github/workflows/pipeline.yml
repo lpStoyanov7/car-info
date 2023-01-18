@@ -200,8 +200,7 @@ jobs:
           JOBS_STATUS: ${{ contains(needs.*.result, 'failure') && '"Failure"' || '"Success"' }}
       - name: Jobs status
         run: |
-          echo "${{ env.JOBS_STATUS }}"
-
+          echo "job status:$JOBS_STATUS"
       - name: String manupulation
         run: |
         echo '{ "status": "${{ env.JOBS_STATUS }}" }'
