@@ -195,7 +195,7 @@ jobs:
       - uses: actions/checkout@master
       #            overwrite: "{title: `Overwrote title in ${workflow_link}`}"
       - name: Microsoft Teams Failure Notification
-        if: ${{ contains(needs.*.result, 'failure'}
+        if: ${{ contains(needs.*.result, 'failure') }}
         uses: actions/github-script@v3
         with:
           script: |
