@@ -214,6 +214,6 @@ jobs:
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
           needs: ${{ toJson(needs) }}
-#          job: ${{ env.JOBS_STATUS == true && env.JOB_FAILED || env.JOB_SUCCESS }}
-          job: ${{ steps.status.outputs.value }}
+          job: ${{ env.JOBS_STATUS && env.JOB_FAILED || env.JOB_SUCCESS }}
+#          job: ${{ steps.status.outputs.value }}
           steps: ${{ toJson(steps) }}
