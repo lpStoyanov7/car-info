@@ -8,20 +8,21 @@ on:
 #   branches: [main, release/**, develop-*]
 
 jobs:
-#  # Code
-#    editorconfig-check:
-#      name: .editorconfig lint
-#      runs-on: ubuntu-latest
-#      steps:
-#        - uses: actions/checkout@v2
-#        - uses: editorconfig-checker/action-editorconfig-checker@v1
-#
-#    markdown-lint:
-#      name: markdown lint
-#      runs-on: ubuntu-latest
-#      steps:
-#        - uses: actions/checkout@v2
-#        - run: npx markdownlint-cli **/*.md
+  # Code
+  editorconfig-check:
+    name: .editorconfig lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: editorconfig-checker/action-editorconfig-checker@v1
+
+  markdown-lint:
+    name: markdown lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npx markdownlint-cli **/*.md
+
   check_db_scripts:
     runs-on: ubuntu-latest
     services:
@@ -44,54 +45,54 @@ jobs:
           user: user
           password: password
 
-#  unit_tests:
-#    name: Quality check
-#    runs-on: ubuntu-latest
-#    #    needs: [ editorconfig-check, markdown-lint ]
-#    needs: [ build ]
-#    permissions:
-#      id-token: write
-#      contents: read
-#      checks: write
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#        with:
-#          java-version: '11'
-#          distribution: 'adopt'
-#      - name: Maven test
-#        run: mvn -B test
-#      - name: Test Report
-#        uses: dorny/test-reporter@v1
-#        if: success() || failure()
-#        with:
-#          name: JUnit Tests
-#          path: target/surefire-reports/*.xml
-#          reporter: java-junit
+  #  unit_tests:
+  #    name: Quality check
+  #    runs-on: ubuntu-latest
+  #    #    needs: [ editorconfig-check, markdown-lint ]
+  #    needs: [ build ]
+  #    permissions:
+  #      id-token: write
+  #      contents: read
+  #      checks: write
+  #    steps:
+  #      - name: Checkout
+  #        uses: actions/checkout@v3
+  #        with:
+  #          java-version: '11'
+  #          distribution: 'adopt'
+  #      - name: Maven test
+  #        run: mvn -B test
+  #      - name: Test Report
+  #        uses: dorny/test-reporter@v1
+  #        if: success() || failure()
+  #        with:
+  #          name: JUnit Tests
+  #          path: target/surefire-reports/*.xml
+  #          reporter: java-junit
 
-#  #  #Build
-#  build:
-#    #    needs: [ editorconfig-check, markdown-lint ]
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: Set up JDK 11
-#        uses: actions/setup-java@v3
-#        with:
-#          java-version: '11'
-#          distribution: 'adopt'
-#      - name: Build with Maven
-#        run: |
-#          mvn clean install -Dmaven.test.skip=true
-#
-#      - name: Upload JAR
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: jar-artifact
-#          path: target/*.jar
-#          if-no-files-found: error
-#          retention-days: 1
+  #  #  #Build
+  #  build:
+  #    #    needs: [ editorconfig-check, markdown-lint ]
+  #    runs-on: ubuntu-latest
+  #
+  #    steps:
+  #      - uses: actions/checkout@v3
+  #      - name: Set up JDK 11
+  #        uses: actions/setup-java@v3
+  #        with:
+  #          java-version: '11'
+  #          distribution: 'adopt'
+  #      - name: Build with Maven
+  #        run: |
+  #          mvn clean install -Dmaven.test.skip=true
+  #
+  #      - name: Upload JAR
+  #        uses: actions/upload-artifact@v3
+  #        with:
+  #          name: jar-artifact
+  #          path: target/*.jar
+  #          if-no-files-found: error
+  #          retention-days: 1
 
   #
   #
@@ -143,51 +144,52 @@ jobs:
   ##          severity: "CRITICAL,HIGH"
   #
   # Deploy
-#  deploy:
-#    #    needs: [ push-to-registry ]
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#        with:
-#          persist-credentials: false
-#
-#      - name: Configure AWS credentials
-#        id: aws-credentials
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: eu-west-1
-#
-##      - uses: swdotcom/update-and-apply-kubernetes-configs@v1
-##        with:
-##          k8-config-file-paths: kubernetes/service.yml kubernetes/deployment.yml
-##          replacement-method: list
-##          env-replacement-list: |
-##            IMAGE_KEY
-##        env:
-##          IMAGE_KEY: lpstoyanov/car-info:sha-74d1117ce158972aa3951fa88e016cb05ad024a8
-#
-#
-#      # The following command will update the kube config file with our cluster information.
-#      # It will use the credentials exported by the previous action.
-#      - name: Update KubeConfig
-#        shell: bash
-#        run: |
-#          aws eks update-kubeconfig --name carinfo-cluster --region=eu-west-1
-#
-#      # Deploy newly built changes to EKS cluster.
-#      - name: Deploy To Cluster
-#        shell: bash
-#        run: |
-#          kubectl apply -f kubernetes/deployment.yml
-#          kubectl apply -f kubernetes/service.yml
+  #  deploy:
+  #    #    needs: [ push-to-registry ]
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #      - name: Checkout
+  #        uses: actions/checkout@v2
+  #        with:
+  #          persist-credentials: false
+  #
+  #      - name: Configure AWS credentials
+  #        id: aws-credentials
+  #        uses: aws-actions/configure-aws-credentials@v1
+  #        with:
+  #          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #          aws-region: eu-west-1
+  #
+  ##      - uses: swdotcom/update-and-apply-kubernetes-configs@v1
+  ##        with:
+  ##          k8-config-file-paths: kubernetes/service.yml kubernetes/deployment.yml
+  ##          replacement-method: list
+  ##          env-replacement-list: |
+  ##            IMAGE_KEY
+  ##        env:
+  ##          IMAGE_KEY: lpstoyanov/car-info:sha-74d1117ce158972aa3951fa88e016cb05ad024a8
+  #
+  #
+  #      # The following command will update the kube config file with our cluster information.
+  #      # It will use the credentials exported by the previous action.
+  #      - name: Update KubeConfig
+  #        shell: bash
+  #        run: |
+  #          aws eks update-kubeconfig --name carinfo-cluster --region=eu-west-1
+  #
+  #      # Deploy newly built changes to EKS cluster.
+  #      - name: Deploy To Cluster
+  #        shell: bash
+  #        run: |
+  #          kubectl apply -f kubernetes/deployment.yml
+  #          kubectl apply -f kubernetes/service.yml
 
   webhook:
-#      needs: [ editorconfig-check, markdown-lint ]
-    needs: [check_db_scripts]
-    if: always()
+    needs: [ editorconfig-check, markdown-lint, check_db_scripts ]
+    #    needs: [check_db_scripts]
+    if: always() &&  needs.editorconfig-check.result == 'success' && needs.markdown-lint.result == 'skipped' &&
+      needs.check_db_scripts.result == 'success'
     name: Sending MS Teams Notification
     runs-on: ubuntu-latest
     steps:
