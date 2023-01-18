@@ -194,17 +194,19 @@ jobs:
     steps:
       - uses: actions/checkout@master
       #            overwrite: "{title: `Overwrote title in ${workflow_link}`}"
-      - name: Microsoft Teams Failure Notification
-        if: ${{ contains(needs.*.result, 'failure') }}
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed('there is a failing job')
+#      - name: Microsoft Teams Failure Notification
+#        if: ${{ contains(needs.*.result, 'failure') }}
+        env:
+          JOBS_STATUS: ${{ contains(needs.*.result, 'failure') && '"Failure"' || '"Success"' }}
+#        uses: actions/github-script@v3
+#        with:
+#          script: |
+#            core.setFailed('there is a failing job')
       - name: Microsoft Teams Notification
         uses: skitionek/notify-microsoft-teams@master
         if: always()
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
           needs: ${{ toJson(needs) }}
-          job: ${{ toJson(job) }}
+          job: { "status": $JOBS_STATUS }
           steps: ${{ toJson(steps) }}
