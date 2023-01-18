@@ -188,7 +188,7 @@ jobs:
   webhook:
     needs: [ editorconfig-check, markdown-lint, check_db_scripts ]
     #    needs: [check_db_scripts]
-    if: success() || faiure()
+    if: success() || failure()
     name: Sending MS Teams Notification
     runs-on: ubuntu-latest
     steps:
