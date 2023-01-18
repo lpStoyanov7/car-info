@@ -217,11 +217,16 @@ jobs:
       #            core.setFailed('there is a failing job')
 
       - name: Microsoft Teams Notification
+        run: |
+          echo $JOBS_STATUS
+          echo {{ env.HAS_FAILURES }}
+          echo "Value of the variable3: $OTHER"
+          echo "Value of the variable3: $JOB_NAME"
         uses: skitionek/notify-microsoft-teams@master
         if: always()
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
           needs: ${{ toJson(needs) }}
           #          job: ${{ format('{ "status" : {0}', $JOBS_STATUS) }}
-          job: '{ "status": "$JOBS_STATUS"}'
+          job: '{ "status": "failure" }'
           steps: ${{ toJson(steps) }}
