@@ -196,25 +196,25 @@ jobs:
         #            overwrite: "{title: `Overwrote title in ${workflow_link}`}"
         #      - name: Microsoft Teams Failure Notification
         #        if: ${{ contains(needs.*.result, 'failure') }}
+      - name: Jobs status
         env:
           JOBS_STATUS: ${{ contains(needs.*.result, 'failure') && '"Failure"' || '"Success"' }}
           HAS_FAILURES: ${{ contains(needs.*.result, 'failure') }}
           OTHER: ${{ contains(needs.*.result, 'failure') && 'Failure' || 'Success' }}
           JOB_NAME: ${{ toJson(job) }}
-      - name: Jobs status
         run: |
-          echo "Value of the variable1: $JOBS_STATUS"
-          echo "Value of the variable2: $HAS_FAILURES"
+          echo $JOBS_STATUS
+          echo {{ env.HAS_FAILURES }}
           echo "Value of the variable3: $OTHER"
           echo "Value of the variable3: $JOB_NAME"
-#      - name: String manupulation
-#        run: |
-#        echo '{ "status": "${{ env.JOBS_STATUS }}" }'
+      #      - name: String manupulation
+      #        run: |
+      #        echo '{ "status": "${{ env.JOBS_STATUS }}" }'
 
-#        uses: actions/github-script@v3
-#        with:
-#          script: |
-#            core.setFailed('there is a failing job')
+      #        uses: actions/github-script@v3
+      #        with:
+      #          script: |
+      #            core.setFailed('there is a failing job')
 
       - name: Microsoft Teams Notification
         uses: skitionek/notify-microsoft-teams@master
