@@ -201,11 +201,19 @@ jobs:
         run: |
           echo $JOBS_STATUS
           echo $JOBS_STATUS == true
+      - name: Set status of the pipeline
+        uses: haya14busa/action-cond@v1
+        id: status
+        with:
+          cond: ${{ env.JOBS_STATUS }}
+          if_true: '{ "status": "Failure" }'
+          if_false: '{ "status": "Success" }'
       - name: Microsoft Teams Notification
         uses: skitionek/notify-microsoft-teams@master
         if: always()
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
           needs: ${{ toJson(needs) }}
-          job: ${{ env.JOBS_STATUS == true && env.JOB_FAILED || env.JOB_SUCCESS }}
+#          job: ${{ env.JOBS_STATUS == true && env.JOB_FAILED || env.JOB_SUCCESS }}
+          job: ${{ steps.status.outputs.value }}
           steps: ${{ toJson(steps) }}
