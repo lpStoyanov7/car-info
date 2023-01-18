@@ -200,11 +200,13 @@ jobs:
           JOBS_STATUS: ${{ contains(needs.*.result, 'failure') && '"Failure"' || '"Success"' }}
           HAS_FAILURES: ${{ contains(needs.*.result, 'failure') }}
           OTHER: ${{ contains(needs.*.result, 'failure') && 'Failure' || 'Success' }}
+          JOB_NAME: ${{ toJson(job) }}
       - name: Jobs status
         run: |
           echo "Value of the variable1: $JOBS_STATUS"
           echo "Value of the variable2: $HAS_FAILURES"
           echo "Value of the variable3: $OTHER"
+          echo "Value of the variable3: $JOB_NAME"
 #      - name: String manupulation
 #        run: |
 #        echo '{ "status": "${{ env.JOBS_STATUS }}" }'
