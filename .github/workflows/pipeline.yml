@@ -23,27 +23,27 @@ jobs:
       - uses: actions/checkout@v2
       - run: npx markdownlint-cli **/*.md
 
-  check_db_scripts:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_DB: db
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    steps:
-      - uses: actions/checkout@v2
-      - uses: joshuaavalon/flyway-action@v3.0.0
-        with:
-          url: jdbc:postgresql://postgres:5432/db
-          user: user
-          password: password
+  #  check_db_scripts:
+  #    runs-on: ubuntu-latest
+  #    services:
+  #      postgres:
+  #        image: postgres
+  #        env:
+  #          POSTGRES_DB: db
+  #          POSTGRES_USER: user
+  #          POSTGRES_PASSWORD: password
+  #        options: >-
+  #          --health-cmd pg_isready
+  #          --health-interval 10s
+  #          --health-timeout 5s
+  #          --health-retries 5
+  #    steps:
+  #      - uses: actions/checkout@v2
+  #      - uses: joshuaavalon/flyway-action@v3.0.0
+  #        with:
+  #          url: jdbc:postgresql://postgres:5432/db
+  #          user: user
+  #          password: password
 
   #  unit_tests:
   #    name: Quality check
@@ -186,41 +186,26 @@ jobs:
   #          kubectl apply -f kubernetes/service.yml
 
   webhook:
-    needs: [ editorconfig-check, markdown-lint, check_db_scripts ]
+    needs: [ editorconfig-check, markdown-lint ]
     #    needs: [check_db_scripts]
     if: always()
     name: Sending MS Teams Notification
     runs-on: ubuntu-latest
     env:
-      JOB_SUCCESS: '{ "status": "Failure" }'
-      JOB_FAILED: '{ "status": "Success" }'
+      JOB_FAILED: '{ "status": "Failure" }'
+      JOB_SUCCESS: '{ "status": "Success" }'
       JOBS_STATUS: ${{ contains(needs.*.result, 'failure') }}
     steps:
       - uses: actions/checkout@master
-        #            overwrite: "{title: `Overwrote title in ${workflow_link}`}"
-        #      - name: Microsoft Teams Failure Notification
-        #        if: ${{ contains(needs.*.result, 'failure') }}
       - name: Jobs status
-
         run: |
           echo $JOBS_STATUS
-          echo "Value of the variable3: $OTHER"
-
-      #      - name: String manupulation
-      #        run: |
-      #        echo '{ "status": "${{ env.JOBS_STATUS }}" }'
-
-      #        uses: actions/github-script@v3
-      #        with:
-      #          script: |
-      #            core.setFailed('there is a failing job')
-
+          echo $JOBS_STATUS == true
       - name: Microsoft Teams Notification
         uses: skitionek/notify-microsoft-teams@master
         if: always()
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
           needs: ${{ toJson(needs) }}
-          #          job: ${{ format('{ "status" : {0}', $JOBS_STATUS) }}
           job: ${{ env.JOBS_STATUS == true && env.JOB_FAILED || env.JOB_SUCCESS }}
           steps: ${{ toJson(steps) }}

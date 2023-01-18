@@ -19,7 +19,7 @@ create table tbl_car
     id              int not null PRIMARY KEY,
     engine_id       int not null,
     manufacturer_id int not null,
-    year            DATE3,
+    year            DATE,
     constraint fk_car_engine
         foreign key (engine_id)
             REFERENCES tbl_engine (id),
