@@ -194,7 +194,7 @@ jobs:
     env:
       JOB_SUCCESS: '{ "status": "Failure" }'
       JOB_FAILED: '{ "status": "Success" }'
-      JOBS_STATUS: ${{ contains(needs.*.result, 'failure') && $JOB_FAILED || $JOB_SUCCESS }}
+      JOBS_STATUS: ${{ contains(needs.*.result, 'failure') }}
     steps:
       - uses: actions/checkout@master
         #            overwrite: "{title: `Overwrote title in ${workflow_link}`}"
@@ -222,5 +222,5 @@ jobs:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
           needs: ${{ toJson(needs) }}
           #          job: ${{ format('{ "status" : {0}', $JOBS_STATUS) }}
-          job: $JOBS_STATUS
+          job: ${{ env.JOBS_STATUS == true && env.JOB_FAILED || env.JOB_SUCCESS }}
           steps: ${{ toJson(steps) }}
