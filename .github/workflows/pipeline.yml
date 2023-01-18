@@ -208,5 +208,5 @@ jobs:
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
           needs: ${{ toJson(needs) }}
-          job: { "status": $JOBS_STATUS }
+          job: $JOBS_STATUS
           steps: ${{ toJson(steps) }}
