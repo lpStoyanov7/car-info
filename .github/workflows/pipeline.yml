@@ -188,18 +188,17 @@ jobs:
   webhook:
     needs: [ editorconfig-check, markdown-lint, check_db_scripts ]
     #    needs: [check_db_scripts]
-    if: always() &&  needs.editorconfig-check.result == 'success' && needs.markdown-lint.result == 'skipped' &&
-      needs.check_db_scripts.result == 'success'
+    if: always()
     name: Sending MS Teams Notification
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - name: Microsoft Teams Notification
         uses: skitionek/notify-microsoft-teams@master
-        if: always()
+#        if: always()
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
           needs: ${{ toJson(needs) }}
-          job: ${{ toJson(job) }}
+          job: ${{ !contains(needs.*.result, 'failure') }}
           steps: ${{ toJson(steps) }}
 #            overwrite: "{title: `Overwrote title in ${workflow_link}`}"
