@@ -200,7 +200,7 @@ jobs:
           JOBS_STATUS: ${{ contains(needs.*.result, 'failure') && '"Failure"' || '"Success"' }}
       - name: Jobs status
         run: |
-          echo "Value of the variable: ${{ env.JOBS_STATUS }}"
+          echo "Value of the variable: $JOBS_STATUS"
 #      - name: String manupulation
 #        run: |
 #        echo '{ "status": "${{ env.JOBS_STATUS }}" }'
@@ -217,5 +217,5 @@ jobs:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
           needs: ${{ toJson(needs) }}
           #          job: ${{ format('{ "status" : {0}', $JOBS_STATUS) }}
-          job: '{ "status": "${{ env.JOBS_STATUS }}"}'
+          job: '{ "status": "$JOBS_STATUS"}'
           steps: ${{ toJson(steps) }}
