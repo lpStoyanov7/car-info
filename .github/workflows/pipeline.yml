@@ -188,17 +188,23 @@ jobs:
   webhook:
     needs: [ editorconfig-check, markdown-lint, check_db_scripts ]
     #    needs: [check_db_scripts]
-    if: success() || failure()
+    if: always()
     name: Sending MS Teams Notification
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Microsoft Teams Notification
-        uses: skitionek/notify-microsoft-teams@master
-#        if: success() || faiure()
+      #            overwrite: "{title: `Overwrote title in ${workflow_link}`}"
+      - name: Microsoft Teams Failure Notification
+        if: ${{ contains(needs.*.result, 'failure'}
+        uses: actions/github-script@v3
         with:
-          webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
-          needs: ${{ toJson(needs) }}
-          job: ${{ toJson(job) }}
-          steps: ${{ toJson(steps) }}
-#            overwrite: "{title: `Overwrote title in ${workflow_link}`}"
+          script: |
+            core.setFailed('there is a failing job')
+      - name: Microsoft Teams Notification
+          uses: skitionek/notify-microsoft-teams@master
+          if: always()
+          with:
+            webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
+            needs: ${{ toJson(needs) }}
+            job: ${{ toJson(job) }}
+            steps: ${{ toJson(steps) }}
