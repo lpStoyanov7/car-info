@@ -201,9 +201,9 @@ jobs:
       - name: Jobs status
         run: |
           echo "Value of the variable: ${{ env.JOBS_STATUS }}"
-      - name: String manupulation
-        run: |
-        echo '{ "status": "${{ env.JOBS_STATUS }}" }'
+#      - name: String manupulation
+#        run: |
+#        echo '{ "status": "${{ env.JOBS_STATUS }}" }'
 
 #        uses: actions/github-script@v3
 #        with:
