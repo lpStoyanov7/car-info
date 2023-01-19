@@ -160,7 +160,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Output image url
-        run: echo "image=${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:sha-${{ github.sha }} >> $GITHUB_OUTPUT
+        run: echo "image=${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:sha-${{ github.sha }}" >> $GITHUB_OUTPUT
 
   #      - name: Run Trivy vulnerability scanner
   #        uses: aquasecurity/trivy-action@master
@@ -190,7 +190,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
       - name: Print image url
-        run: echo ${{ needs.push-to-registry.outputs.image }}
+        run: echo "${{ needs.push-to-registry.outputs.image }}"
           #      - uses: swdotcom/update-and-apply-kubernetes-configs@v1
           #        with:
           #          k8-config-file-paths: kubernetes/service.yml kubernetes/deployment.yml
