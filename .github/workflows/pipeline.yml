@@ -190,7 +190,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
       - name: Print image url
-        run: echo "${{ needs.push-to-registry.outputs.image }}"
+        run: echo "${{ needs.build.outputs.image }}"
           #      - uses: swdotcom/update-and-apply-kubernetes-configs@v1
           #        with:
           #          k8-config-file-paths: kubernetes/service.yml kubernetes/deployment.yml
@@ -203,17 +203,17 @@ jobs:
 
           # The following command will update the kube config file with our cluster information.
           # It will use the credentials exported by the previous action.
-          - name: Update KubeConfig
-            shell: bash
-            run: |
-              aws eks update-kubeconfig --name carinfo-cluster --region=eu-west-1
+      - name: Update KubeConfig
+        shell: bash
+        run: |
+          aws eks update-kubeconfig --name carinfo-cluster --region=eu-west-1
 
-          # Deploy newly built changes to EKS cluster.
-          - name: Deploy To Cluster
-            shell: bash
-            run: |
-              kubectl apply -f kubernetes/deployment.yml
-              kubectl apply -f kubernetes/service.yml
+      # Deploy newly built changes to EKS cluster.
+      - name: Deploy To Cluster
+        shell: bash
+        run: |
+          kubectl apply -f kubernetes/deployment.yml
+          kubectl apply -f kubernetes/service.yml
 
 #  webhook:
 #    needs: [ editorconfig-check, markdown-lint ]
