@@ -39,9 +39,9 @@ jobs:
           files: sql/**
       - name: Set output variable
         run: |
-          echo "changes=${{ steps.changed-files-specific.outputs.any_changed}}" >> GITHUB_OUTPUT
+          echo "changes=${{ steps.changed-files-specific.outputs.any_changed }}" >> GITHUB_OUTPUT
       - name: Verifying if files are changed
-        run: echo "Are any files changed- ${{ steps.changed-files-specific.outputs.any_changed}}"
+        run: echo "Are any files changed- ${{ steps.changed-files-specific.outputs.any_changed }}"
 
   check-db-scripts:
     needs: [ db-changes ]
