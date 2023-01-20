@@ -262,7 +262,7 @@ jobs:
       - name: Deploy To Cluster
         shell: bash
         run: |
-          kubectl -n ${{ needs.build.outputs.image }} apply -f kubernetes/*.yml
+          kubectl -n ${{ needs.preparation.outputs.stage }} apply -f kubernetes/*.yml
 
 #  webhook:
 #    needs: [ editorconfig-check, markdown-lint ]
