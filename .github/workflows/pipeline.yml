@@ -206,7 +206,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Output image url
-        id:image-url
+        id: image-url
         run: echo "image=${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:sha-${{ github.sha }}" >> $GITHUB_OUTPUT
 
   #      - name: Run Trivy vulnerability scanner
