@@ -154,7 +154,8 @@ jobs:
     needs: [ build, unit-tests, markdown-lint, editorconfig-check, check-db-scripts, deploy-preparation ]
     name: Push image to Docker Hub
     runs-on: ubuntu-latest
-    if: !contains(needs.*.result, 'failure')
+#    if: ${{ !contains(needs.*.result, 'failure') }}
+    if: needs.check-db-scripts.result != 'failure'
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
