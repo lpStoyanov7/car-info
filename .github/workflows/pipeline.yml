@@ -147,6 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image-url: ${{ steps.image-url.outputs.image-url }}
+      second: "test"
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -188,8 +189,6 @@ jobs:
       - name: Show output image-url
         run: echo "${{steps.image-url.outputs.image-url}}"
 
-      - name: Show output image-url 2
-        run: echo "${{ steps.image-url.outputs.image-url }}"
 
   #      - name: Run Trivy vulnerability scanner
   #        uses: aquasecurity/trivy-action@master
@@ -220,12 +219,11 @@ jobs:
           aws-region: eu-west-1
       - name: Print image url
         run: echo "${{needs.push-to-registry.outputs.image-url}}"
-      - name: Print image url2
-        run: echo "${{needs.push-to-registry.outputs.image-url}}"
-      - name: Print image url3
-        run: echo ${{needs.push-to-registry.outputs.image-url}}
-      - name: Print image url4
-        run: echo ${{ needs.push-to-registry.outputs.image-url }}
+      - name: Print second
+        run: echo "${{needs.push-to-registry.outputs.second}}"
+      - name: Print preparation
+        run: echo ${{needs.preparation.outputs.stage}}
+
         # The following command will update the kube config file with our cluster information.
         # It will use the credentials exported by the previous action.
       - name: Update KubeConfig
