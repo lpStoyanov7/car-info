@@ -232,7 +232,7 @@ jobs:
   webhook:
     needs:
       - editorconfig-check
-      - markdown-list
+      - markdown-lint
       - db-changes
       - check-db-scripts
       - unit-tests
