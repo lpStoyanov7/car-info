@@ -90,6 +90,7 @@ jobs:
   deploy-preparation:
     needs: [ build, unit-tests, markdown-lint, editorconfig-check, check-db-scripts ]
     name: Deploy preparation
+    if: always() && !contains(needs.*.result, 'failure')
     runs-on: ubuntu-latest
     outputs:
       stage: ${{ steps.branch-check.outputs.stage }}
