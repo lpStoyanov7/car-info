@@ -213,8 +213,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
       - name: Print image url
-        run: echo "${{ needs.push-to-registry.outputs.image-url }}"
-
+        run: echo "${{needs.push-to-registry.outputs.image-url}}"
+      - name: Print image url2
+        run: echo "${{needs.push-to-registry.outputs.image-url}}"
+      - name: Print image url3
+        run: echo ${{needs.push-to-registry.outputs.image-url}}
+      - name: Print image url4
+        run: echo ${{ needs.push-to-registry.outputs.image-url }}
         # The following command will update the kube config file with our cluster information.
         # It will use the credentials exported by the previous action.
       - name: Update KubeConfig
