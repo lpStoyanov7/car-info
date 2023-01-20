@@ -230,35 +230,35 @@ jobs:
           kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/deployment.yml
           kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/service.yml
 
-  webhook:
-    needs:
-      - editorconfig-check
-      - markdown-list
-      - db-changes
-      - check-db-scripts
-      - unit-tests
-      - deploy-preparation
-      - build
-      - push-to-registry
-      - deploy
-    if: always()
-    name: Sending MS Teams Notification
-    runs-on: ubuntu-latest
-    steps:
-      - name: Determine the status of the whole pipeline
-        uses: haya14busa/action-cond@v1
-        id: status
-        with:
-          # We check here if there is any job that is failing
-          cond: ${{ contains(needs.*.result, 'failure') }}
-          # skitionek/notify-microsoft-teams@master action expects Json object for the job context
-          if_true: '{ "status": "Failure" }'
-          if_false: '{ "status": "Success" }'
-      - name: Microsoft Teams Notification
-        uses: skitionek/notify-microsoft-teams@master
-        if: always()
-        with:
-          webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
-          needs: ${{ toJson(needs) }}
-          job: ${{ steps.status.outputs.value }}
-          steps: ${{ toJson(steps) }}
+#  webhook:
+#    needs:
+#      - editorconfig-check
+#      - markdown-list
+#      - db-changes
+#      - check-db-scripts
+#      - unit-tests
+#      - deploy-preparation
+#      - build
+#      - push-to-registry
+#      - deploy
+#    if: always()
+#    name: Sending MS Teams Notification
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Determine the status of the whole pipeline
+#        uses: haya14busa/action-cond@v1
+#        id: status
+#        with:
+#          # We check here if there is any job that is failing
+#          cond: ${{ contains(needs.*.result, 'failure') }}
+#          # skitionek/notify-microsoft-teams@master action expects Json object for the job context
+#          if_true: '{ "status": "Failure" }'
+#          if_false: '{ "status": "Success" }'
+#      - name: Microsoft Teams Notification
+#        uses: skitionek/notify-microsoft-teams@master
+#        if: always()
+#        with:
+#          webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
+#          needs: ${{ toJson(needs) }}
+#          job: ${{ steps.status.outputs.value }}
+#          steps: ${{ toJson(steps) }}
