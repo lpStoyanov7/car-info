@@ -146,7 +146,7 @@ jobs:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
     outputs:
-      image: ${{steps.image-url.outputs.image }}
+      image: ${{ steps.image-url.outputs.image }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
