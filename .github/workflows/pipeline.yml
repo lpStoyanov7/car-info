@@ -46,7 +46,7 @@ jobs:
   check-db-scripts:
     needs: db-changes
     runs-on: ubuntu-latest
-    if: ${{ needs.db-changes.outputs.has-scripts }}
+    if: ${{ needs.db-changes.outputs.has-scripts == 'true' }}
     services:
       postgres:
         image: postgres
