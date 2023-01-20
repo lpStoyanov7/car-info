@@ -146,7 +146,7 @@ jobs:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
     outputs:
-      image: ${{ steps.image-url.outputs.image }}
+      image-url: ${{ steps.image-url.outputs.image-url }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -164,19 +164,6 @@ jobs:
           images: ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}
           tags: |
             type=sha,format=long
-
-      #      - name: Configure AWS credentials
-      #        id: aws-credentials
-      #        uses: aws-actions/configure-aws-credentials@v1
-      #        with:
-      #          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #          aws-region: us-east-1
-      #
-      #      - name: Login to Amazon ECR
-      #        id: login-ecr
-      #        uses: aws-actions/amazon-ecr-login@v1
-
       - name: Download Build Artifacts
         uses: actions/download-artifact@v1
         with:
@@ -195,7 +182,8 @@ jobs:
           DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }}
           DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
           GIT_SHA: ${{ github.sha }}
-        run: echo "image=${{ format ('{0}/{1}:sha-{2}', secrets.DOCKER_NAMESPACE, secrets.DOCKER_REPOSITORY, github.sha) }}" >> $GITHUB_OUTPUT
+        run: |
+          echo "image-url=${{ format ('{0}/{1}:sha-{2}', secrets.DOCKER_NAMESPACE, secrets.DOCKER_REPOSITORY, github.sha) }}" >> $GITHUB_OUTPUT
 
   #      - name: Run Trivy vulnerability scanner
   #        uses: aquasecurity/trivy-action@master
@@ -225,7 +213,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
       - name: Print image url
-        run: echo "${{ needs.push-to-registry.outputs.image }}"
+        run: echo "${{ needs.push-to-registry.outputs.image-url }}"
 
         # The following command will update the kube config file with our cluster information.
         # It will use the credentials exported by the previous action.
@@ -235,7 +223,7 @@ jobs:
           aws eks update-kubeconfig --name carinfo-cluster --region=eu-west-1
       - name: Edit kuberetes files
         run: |
-          sed -i -e "s/\${IMAGE}/${{ needs.push-to-registry.outputs.image }}/g" \
+          sed -i -e "s/\${IMAGE}/${{ needs.push-to-registry.outputs.image-url }}/g" \
           -e "s/\${STAGE}/${{ needs.preparation.outputs.stage }}/g" \
           -e "s/\${REPLICAS}/${{ needs.preparation.outputs.replica-count }}/g" \
           -e "s/\${NODE}/${{ needs.preparation.outputs.node }}/g" kubernetes/*.yml
