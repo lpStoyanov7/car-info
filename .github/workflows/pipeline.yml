@@ -155,6 +155,7 @@ jobs:
     name: Push image to Docker Hub
     runs-on: ubuntu-latest
 #    if: ${{ !contains(needs.*.result, 'failure') }}
+    if: always()
     steps:
       - name: Log ouput
         run: |
