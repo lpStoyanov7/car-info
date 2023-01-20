@@ -218,7 +218,8 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
-
+      - name: Check if git sha is the same
+        run: echo 'Gitsha - ${{ github.sha }}'
         # The following command will update the kube config file with our cluster information.
         # It will use the credentials exported by the previous action.
       - name: Update KubeConfig
