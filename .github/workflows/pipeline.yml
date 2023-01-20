@@ -195,16 +195,7 @@ jobs:
   #
   # Deploy
   deploy:
-    needs:
-      - editorconfig-check
-      - markdown-list
-      - db-changes
-      - check-db-scripts
-      - unit-tests
-      - deploy-preparation
-      - build
-      - push-to-registry
-      - depploy
+    needs: [deploy-preparation, push-to-registry]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -240,7 +231,16 @@ jobs:
           kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/service.yml
 
   webhook:
-    needs: [ editorconfig-check, markdown-lint ]
+    needs:
+      - editorconfig-check
+      - markdown-list
+      - db-changes
+      - check-db-scripts
+      - unit-tests
+      - deploy-preparation
+      - build
+      - push-to-registry
+      - deploy
     if: always()
     name: Sending MS Teams Notification
     runs-on: ubuntu-latest
