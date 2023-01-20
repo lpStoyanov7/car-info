@@ -1,20 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: carinfo
+  name: carinfo-${STAGE}
 spec:
   selector:
     matchLabels:
-      app: carinfo
-  replicas: 2
+      app: carinfo-${STAGE}
+  replicas: ${REPLICAS}
   template:
     metadata:
       labels:
-        app: carinfo
+        app: carinfo-${STAGE}
     spec:
+      nodeSelector:
+        environment: ${NODE}
       containers:
-        - name: carinfo
-#          image: ${IMAGE_KEY}
-          image: lpstoyanov/car-info:sha-74d1117ce158972aa3951fa88e016cb05ad024a8
+        - name: carinfo-${STAGE}
+          image: ${IMAGE}
           ports:
             - containerPort: 8080
