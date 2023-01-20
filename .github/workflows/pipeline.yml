@@ -46,26 +46,29 @@ jobs:
   check-db-scripts:
     needs: [ db-changes ]
     runs-on: ubuntu-latest
-    if: needs.db-changes.outputs.has-scripts == 'true'
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_DB: db
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+#    if: needs.db-changes.outputs.has-scripts == 'true'
     steps:
-      - uses: actions/checkout@v2
-      - uses: joshuaavalon/flyway-action@v3.0.0
-        with:
-          url: jdbc:postgresql://postgres:5432/db
-          user: user
-          password: password
+      - name: print output of previous job
+        run: echo "$needs.db-changes.outputs.has-scripts"
+#    services:
+#      postgres:
+#        image: postgres
+#        env:
+#          POSTGRES_DB: db
+#          POSTGRES_USER: user
+#          POSTGRES_PASSWORD: password
+#        options: >-
+#          --health-cmd pg_isready
+#          --health-interval 10s
+#          --health-timeout 5s
+#          --health-retries 5
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: joshuaavalon/flyway-action@v3.0.0
+#        with:
+#          url: jdbc:postgresql://postgres:5432/db
+#          user: user
+#          password: password
 
   #  unit_tests:
   #    name: Quality check
@@ -94,43 +97,43 @@ jobs:
 
 
 
-  deploy-preparation:
-    name: Deploy preparation
-    runs-on: ubuntu-latest
-    outputs:
-      stage: ${{ steps.branch-check.outputs.stage }}
-      node: ${{ steps.node-replica.outputs.node }}
-      replica-count: ${{ steps.node-replica.outputs.count }}
-    steps:
-      - name: Set stage by branch
-        id: branch-check
-        run: |
-          echo "Running on branch ${{ github.ref }}"
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            echo "stage=prd" >> $GITHUB_OUTPUT
-          elif [ "${{ github.ref }}" = "refs/heads/release" ]; then
-            echo "stage=qas" >> $GITHUB_OUTPUT
-          elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
-            echo "stage=dev" >> $GITHUB_OUTPUT
-          else
-            echo "stage=none" >> $GITHUB_OUTPUT
-          fi
-      - name: Select node and replica count
-        id: node-replica
-        run: |
-          if [ "${{ steps.branch-check.outputs.stage }}" = "prd" ]; then
-            echo "count=2" >> $GITHUB_OUTPUT
-            echo "node=prd" >> $GITHUB_OUTPUT
-          else
-            echo "count=1" >> $GITHUB_OUTPUT
-            echo "node=prd" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Print stage with replicas count
-        run: |
-          echo "Stage for branch '${{ github.ref }}' \
-          is '${{ steps.branch-check.outputs.stage }}' with '${{ steps.node-replica.outputs.count }}' replicas
-          echo "Selecting node '${{ steps.node-replica.outputs.node }}'
+#  deploy-preparation:
+#    name: Deploy preparation
+#    runs-on: ubuntu-latest
+#    outputs:
+#      stage: ${{ steps.branch-check.outputs.stage }}
+#      node: ${{ steps.node-replica.outputs.node }}
+#      replica-count: ${{ steps.node-replica.outputs.count }}
+#    steps:
+#      - name: Set stage by branch
+#        id: branch-check
+#        run: |
+#          echo "Running on branch ${{ github.ref }}"
+#          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+#            echo "stage=prd" >> $GITHUB_OUTPUT
+#          elif [ "${{ github.ref }}" = "refs/heads/release" ]; then
+#            echo "stage=qas" >> $GITHUB_OUTPUT
+#          elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+#            echo "stage=dev" >> $GITHUB_OUTPUT
+#          else
+#            echo "stage=none" >> $GITHUB_OUTPUT
+#          fi
+#      - name: Select node and replica count
+#        id: node-replica
+#        run: |
+#          if [ "${{ steps.branch-check.outputs.stage }}" = "prd" ]; then
+#            echo "count=2" >> $GITHUB_OUTPUT
+#            echo "node=prd" >> $GITHUB_OUTPUT
+#          else
+#            echo "count=1" >> $GITHUB_OUTPUT
+#            echo "node=prd" >> $GITHUB_OUTPUT
+#          fi
+#
+#      - name: Print stage with replicas count
+#        run: |
+#          echo "Stage for branch '${{ github.ref }}' \
+#          is '${{ steps.branch-check.outputs.stage }}' with '${{ steps.node-replica.outputs.count }}' replicas
+#          echo "Selecting node '${{ steps.node-replica.outputs.node }}'
 
   #  #  #Build
   #  build:
