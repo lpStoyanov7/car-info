@@ -49,7 +49,7 @@ jobs:
 #    if: needs.db-changes.outputs.has-scripts == 'true'
     steps:
       - name: print output of previous job
-        run: echo "$needs.db-changes.outputs.has-scripts"
+        run: echo "${{ needs.db-changes.outputs.has-scripts }}"
 #    services:
 #      postgres:
 #        image: postgres
