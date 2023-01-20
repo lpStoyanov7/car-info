@@ -63,7 +63,7 @@ jobs:
           user: user
           password: password
 
-  unit_tests:
+  unit-tests:
     name: Quality check
     runs-on: ubuntu-latest
     permissions:
