@@ -76,7 +76,7 @@ jobs:
 
   preparation:
     name: Preparation
-    runs-on: task
+    runs-on: ubuntu-latest
     outputs:
       stage: ${{ steps.branch_check.outputs.stage }}
       node: ${{ steps.node-select.outputs.value }}
