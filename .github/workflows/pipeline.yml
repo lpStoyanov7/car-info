@@ -234,7 +234,7 @@ jobs:
           aws eks update-kubeconfig --name carinfo-cluster --region=eu-west-1
       - name: Edit kuberetes files
         run: |
-          sed -i -e "s/\${IMAGE}/$DOCKER_IMAGE/g" \
+          sed -i -e "s/\${IMAGE}/${{ env.DOCKER_IMAGE }}/g" \
           -e "s/\${STAGE}/${{ needs.preparation.outputs.stage }}/g" \
           -e "s/\${REPLICAS}/${{ needs.preparation.outputs.replica-count }}/g" \
           -e "s/\${NODE}/${{ needs.preparation.outputs.node }}/g" kubernetes/*.yml
