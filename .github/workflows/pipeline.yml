@@ -117,12 +117,6 @@ jobs:
           echo "Stage for branch '${{ github.ref }}' \
           is '${{ steps.branch_check.outputs.stage }}' with '${{ steps.replica-count.outputs.count }}' replicas
           echo "Selecting node '${{ steps.node-select.outputs.node }}'
-      - name: Test 1
-        run: echo ${{ steps.branch_check.outputs.stage == 'prd' }}
-      - name: Test 2
-        run: echo ${{ steps.branch_check.outputs.stage = 'prd' }}
-      - name: Test 3
-        run: echo ${{ steps.branch_check.outputs.stage = 'prd' }}
 
   #  #  #Build
   #  build:
