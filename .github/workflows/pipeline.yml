@@ -149,8 +149,6 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  #
-  #
   #  # Build and push to registry
   push-to-registry:
     needs: [ build, unit-tests, markdown-lint, editorconfig-check, check-db-scripts ]
