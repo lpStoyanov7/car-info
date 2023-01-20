@@ -219,7 +219,7 @@ jobs:
   #
   # Deploy
   deploy:
-    needs: [ push-to-registry ]
+    needs: [ push-to-registry, preparation ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
