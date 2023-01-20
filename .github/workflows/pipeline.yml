@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check if there are any changes to the db scripts
     outputs:
-      has-scripts:  ${{ steps.changed-files-specific.outputs.any_changed }}
+      any_changed:  ${{ steps.changed-files-specific.outputs.any_changed }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -37,38 +37,33 @@ jobs:
         uses: tj-actions/changed-files@v35
         with:
           files: sql/**
-      - name: Set output variable
-        run: |
-          echo "changes=${{ steps.changed-files-specific.outputs.any_changed }}" >> GITHUB_OUTPUT
-      - name: Verifying if files are changed
-        run: echo "Are any files changed- ${{ steps.changed-files-specific.outputs.any_changed }}"
 
   check-db-scripts:
     needs: [ db-changes ]
     runs-on: ubuntu-latest
-#    if:  needs.db-changes.outputs.has-scripts == 'true'
-    steps:
-      - name: print output of previous job
-        run: echo "${{  needs.db-changes.outputs.has-scripts }}"
-#    services:
-#      postgres:
-#        image: postgres
-#        env:
-#          POSTGRES_DB: db
-#          POSTGRES_USER: user
-#          POSTGRES_PASSWORD: password
-#        options: >-
-#          --health-cmd pg_isready
-#          --health-interval 10s
-#          --health-timeout 5s
-#          --health-retries 5
+    if:  needs.db-changes.outputs.any_changed == 'true'
 #    steps:
-#      - uses: actions/checkout@v2
-#      - uses: joshuaavalon/flyway-action@v3.0.0
-#        with:
-#          url: jdbc:postgresql://postgres:5432/db
-#          user: user
-#          password: password
+#      - name: print output of previous job
+#        run: echo "${{  needs.db-changes.outputs.has-scripts }}"
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: db
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+      - uses: joshuaavalon/flyway-action@v3.0.0
+        with:
+          url: jdbc:postgresql://postgres:5432/db
+          user: user
+          password: password
 
   #  unit_tests:
   #    name: Quality check
