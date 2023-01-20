@@ -99,14 +99,14 @@ jobs:
         uses: haya14busa/action-cond@v1
         id: replica-count
         with:
-          cond: ${{ steps.branch_check.outputs.stage = prd }}
+          cond: ${{ steps.branch_check.outputs.stage == 'prd' }}
           if_true: 2
           if_false: 1
       - name: Select node
         uses: haya14busa/action-cond@v1
         id: node-select
         with:
-          cond: ${{ steps.branch_check.outputs.stage = prd }}
+          cond: ${{ steps.branch_check.outputs.stage == 'prd' }}
           if_true: prd
           if_false: dev
       - name: Print stage with replicas count
