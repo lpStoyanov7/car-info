@@ -257,7 +257,7 @@ jobs:
           sed -i -e "s/\${IMAGE}/${{ needs.build.outputs.image }}/g" \
           -e "s/\${STAGE}/${{ needs.preparation.outputs.stage }}/g" \
           -e "s/\${REPLICAS}/${{ needs.preparation.outputs.replica-count }}/g" \
-          -e "s/\${NODE}/${{ needs.preparation.outputs.node }}/g" kubernetes/*.yaml
+          -e "s/\${NODE}/${{ needs.preparation.outputs.node }}/g" kubernetes/*.yml
       # Deploy newly built changes to EKS cluster.
       - name: Deploy To Cluster
         shell: bash
