@@ -88,6 +88,7 @@ jobs:
           reporter: java-junit
 
   deploy-preparation:
+    needs: [ build, unit-tests, markdown-lint, editorconfig-check, check-db-scripts ]
     name: Deploy preparation
     runs-on: ubuntu-latest
     outputs:
@@ -151,7 +152,7 @@ jobs:
   #
   #  # Build and push to registry
   push-to-registry:
-    needs: [ build, unit-tests, markdown-lint, editorconfig-check, check-db-scripts, deploy-preparation ]
+    needs: [ build, unit-tests, markdown-lint, editorconfig-check, check-db-scripts ]
     name: Push image to Docker Hub
     runs-on: ubuntu-latest
     if: always() && !contains(needs.*.result, 'failure')
@@ -200,7 +201,7 @@ jobs:
   # Deploy
   deploy:
     name: Deploying application
-    needs: [ push-to-registry]
+    needs: [ push-to-registry, deploy-preparation ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
