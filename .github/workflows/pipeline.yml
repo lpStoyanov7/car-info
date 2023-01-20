@@ -8,6 +8,8 @@ on:
 #   branches: [main, release/**, develop-*]
 
 jobs:
+  env:
+    DOCKER_IMAGE: ${{ format ('{0}/{1}:sha-{2}', secrets.DOCKER_NAMESPACE, secrets.DOCKER_REPOSITORY, github.sha) }}
   # Code
   #  editorconfig-check:
   #    name: .editorconfig lint
@@ -177,17 +179,17 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: Output image url
-        id: image-url
-#        env:
-#          DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }}
-#          DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
-#          GIT_SHA: ${{ github.sha }}
-        run: |
-          echo "image-url=${{ format ('{0}/{1}:sha-{2}', secrets.DOCKER_NAMESPACE, secrets.DOCKER_REPOSITORY, github.sha) }}" >> $GITHUB_OUTPUT
+#      - name: Output image url
+#        id: image-url
+        #        env:
+        #          DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }}
+        #          DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
+        #          GIT_SHA: ${{ github.sha }}
+#        run: |
+#          echo "image-url=${{ format ('{0}/{1}:sha-{2}', secrets.DOCKER_NAMESPACE, secrets.DOCKER_REPOSITORY, github.sha) }}" >> $GITHUB_OUTPUT
 
       - name: Show output image-url
-        run: echo "${{steps.image-url.outputs.image-url}}"
+        run: echo "$DOCKER_IMAGE"
 
 
   #      - name: Run Trivy vulnerability scanner
@@ -218,7 +220,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
       - name: Print image url
-        run: echo "${{needs.push-to-registry.outputs.image-url}}"
+        run: echo "$DOCKER_IMAGE"
       - name: Print second
         run: echo "${{needs.push-to-registry.outputs.second}}"
       - name: Print preparation
@@ -232,7 +234,7 @@ jobs:
           aws eks update-kubeconfig --name carinfo-cluster --region=eu-west-1
       - name: Edit kuberetes files
         run: |
-          sed -i -e "s/\${IMAGE}/${{ needs.push-to-registry.outputs.image-url }}/g" \
+          sed -i -e "s/\${IMAGE}/$DOCKER_IMAGE/g" \
           -e "s/\${STAGE}/${{ needs.preparation.outputs.stage }}/g" \
           -e "s/\${REPLICAS}/${{ needs.preparation.outputs.replica-count }}/g" \
           -e "s/\${NODE}/${{ needs.preparation.outputs.node }}/g" kubernetes/*.yml
