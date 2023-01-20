@@ -186,8 +186,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: Show job output
-        run: echo '${{ toJson(job) }}'
 
   #      - name: Run Trivy vulnerability scanner
   #        uses: aquasecurity/trivy-action@master

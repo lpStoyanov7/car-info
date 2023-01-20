@@ -16,6 +16,6 @@ spec:
         environment: ${NODE}
       containers:
         - name: carinfo-${STAGE}
-          image: lpstoyanov/car-info:sha-{GIT_SHA}
+          image: lpstoyanov/car-info:{GIT_SHA}
           ports:
             - containerPort: 8080
