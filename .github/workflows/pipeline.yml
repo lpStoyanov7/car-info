@@ -186,10 +186,10 @@ jobs:
           echo "image-url=${{ format ('{0}/{1}:sha-{2}', secrets.DOCKER_NAMESPACE, secrets.DOCKER_REPOSITORY, github.sha) }}" >> $GITHUB_OUTPUT
 
       - name: Show output image-url
-        run: echo "${{steps.image-url.outputs.image-url}}
+        run: echo "${{steps.image-url.outputs.image-url}}"
 
       - name: Show output image-url 2
-        run: echo "${{ steps.image-url.outputs.image-url }}
+        run: echo "${{ steps.image-url.outputs.image-url }}"
 
   #      - name: Run Trivy vulnerability scanner
   #        uses: aquasecurity/trivy-action@master
