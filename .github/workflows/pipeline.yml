@@ -195,7 +195,7 @@ jobs:
           DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }}
           DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
           GIT_SHA: ${{ github.sha }}
-        run: echo "image=$DOCKER_NAMESPACE/$DOCKER_REPOSITORY:sha-$GIT_SHA" >> $GITHUB_OUTPUT
+        run: echo "image={{ format ('{0}/{1}:sha-{2}', secrets.DOCKER_NAMESPACE, secrets.DOCKER_REPOSITORY, github.sha) }} >> $GITHUB_OUTPUT
 
   #      - name: Run Trivy vulnerability scanner
   #        uses: aquasecurity/trivy-action@master
