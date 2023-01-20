@@ -154,36 +154,47 @@ jobs:
     needs: [ build, unit-tests, markdown-lint, editorconfig-check, check-db-scripts, deploy-preparation ]
     name: Push image to Docker Hub
     runs-on: ubuntu-latest
-    if: ${{ !contains(needs.*.result, 'failure') }}
+#    if: ${{ !contains(needs.*.result, 'failure') }}
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
+      - name: Log ouput
+        run: |
+          echo "${{ !contains(needs.*.result, 'failure') }}"
+          echo "${{ contains(needs.*.result, 'failure') }}"
+          echo "${{ contains(needs.*.result, 'skipped') }}"
+          echo "${{ contains(needs.*.result, 'test') }}"
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Test single output
+        run: |
+          echo "${{ needs.check-db-scripts }}"
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}
-          tags: |
-            type=sha,format=long
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v1
-        with:
-          name: jar-artifact
-          path: target/
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+#      - name: Check out the repo
+#        uses: actions/checkout@v3
+#
+#      - name: Log in to Docker Hub
+#        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+#        with:
+#          username: ${{ secrets.DOCKER_USERNAME }}
+#          password: ${{ secrets.DOCKER_PASSWORD }}
+#
+#      - name: Extract metadata (tags, labels) for Docker
+#        id: meta
+#        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+#        with:
+#          images: ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}
+#          tags: |
+#            type=sha,format=long
+#      - name: Download Build Artifacts
+#        uses: actions/download-artifact@v1
+#        with:
+#          name: jar-artifact
+#          path: target/
+#      - name: Build and push Docker image
+#        uses: docker/build-push-action@v3
+#        with:
+#          context: .
+#          push: true
+#          tags: ${{ steps.meta.outputs.tags }}
+#          labels: ${{ steps.meta.outputs.labels }}
 
   #      - name: Run Trivy vulnerability scanner
   #        uses: aquasecurity/trivy-action@master
@@ -196,72 +207,71 @@ jobs:
   #          severity: "CRITICAL,HIGH"
   #
   # Deploy
-  deploy:
-    name: Deploying application
-    needs: [ push-to-registry]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false
+#  deploy:
+#    name: Deploying application
+#    needs: [ push-to-registry]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#        with:
+#          persist-credentials: false
+#
+#      - name: Configure AWS credentials
+#        id: aws-credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: eu-west-1
+#
+#        # The following command will update the kube config file with our cluster information.
+#        # It will use the credentials exported by the previous action.
+#      - name: Update KubeConfig
+#        shell: bash
+#        run: |
+#          aws eks update-kubeconfig --name carinfo-cluster --region=eu-west-1
+#      - name: Edit kuberetes files
+#        run: |
+#          sed -i -e "s/\${GIT_SHA}/${{ github.sha }}/g" \
+#          -e "s/\${STAGE}/${{ needs.deploy-preparation.outputs.stage }}/g" \
+#          -e "s/\${REPLICAS}/${{ needs.deploy-preparation.outputs.replica-count }}/g" \
+#          -e "s/\${NODE}/${{ needs.deploy-preparation.outputs.node }}/g" kubernetes/*.yml
+#      # Deploy newly built changes to EKS cluster.
+#      - name: Deploy To Cluster
+#        shell: bash
+#        run: |
+#          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/deployment.yml
+#          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/service.yml
 
-      - name: Configure AWS credentials
-        id: aws-credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
-
-        # The following command will update the kube config file with our cluster information.
-        # It will use the credentials exported by the previous action.
-      - name: Update KubeConfig
-        shell: bash
-        run: |
-          aws eks update-kubeconfig --name carinfo-cluster --region=eu-west-1
-      - name: Edit kuberetes files
-        run: |
-          sed -i -e "s/\${GIT_SHA}/${{ github.sha }}/g" \
-          -e "s/\${STAGE}/${{ needs.deploy-preparation.outputs.stage }}/g" \
-          -e "s/\${REPLICAS}/${{ needs.deploy-preparation.outputs.replica-count }}/g" \
-          -e "s/\${NODE}/${{ needs.deploy-preparation.outputs.node }}/g" kubernetes/*.yml
-      # Deploy newly built changes to EKS cluster.
-      - name: Deploy To Cluster
-        shell: bash
-        run: |
-          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/deployment.yml
-          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/service.yml
-
-  webhook:
-    name: MS Teams Notification
-    needs:
-      - editorconfig-check
-      - markdown-lint
-      - db-changes
-      - check-db-scripts
-      - unit-tests
-      - deploy-preparation
-      - build
-      - push-to-registry
-      - deploy
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Determine the status of the whole pipeline
-        uses: haya14busa/action-cond@v1
-        id: status
-        with:
-          # We check here if there is any job that is failing
-          cond: ${{ contains(needs.*.result, 'failure') }}
-          # skitionek/notify-microsoft-teams@master action expects Json object for the job context
-          if_true: '{ "status": "Failure" }'
-          if_false: '{ "status": "Success" }'
-      - name: Microsoft Teams Notification
-        uses: skitionek/notify-microsoft-teams@master
-        if: always()
-        with:
-          webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
-          needs: ${{ toJson(needs) }}
-          job: ${{ steps.status.outputs.value }}
-          steps: ${{ toJson(steps) }}
+#  webhook:
+#    name: MS Teams Notification
+#    needs:
+#      - editorconfig-check
+#      - markdown-lint
+#      - db-changes
+#      - check-db-scripts
+#      - unit-tests
+#      - deploy-preparation
+#      - build
+#      - push-to-registry
+#      - deploy
+#    if: always()
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Determine the status of the whole pipeline
+#        uses: haya14busa/action-cond@v1
+#        id: status
+#        with:
+#          # We check here if there is any job that is failing
+#          cond: ${{ contains(needs.*.result, 'failure') }}
+#          # skitionek/notify-microsoft-teams@master action expects Json object for the job context
+#          if_true: '{ "status": "Failure" }'
+#          if_false: '{ "status": "Success" }'
+#      - name: Microsoft Teams Notification
+#        uses: skitionek/notify-microsoft-teams@master
+#        with:
+#          webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
+#          needs: ${{ toJson(needs) }}
+#          job: ${{ steps.status.outputs.value }}
+#          steps: ${{ toJson(steps) }}
