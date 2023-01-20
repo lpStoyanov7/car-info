@@ -74,13 +74,13 @@ jobs:
 
 
 
-  preparation:
-    name: Preparation
+  deploy-preparation:
+    name: Deploy preparation
     runs-on: ubuntu-latest
     outputs:
       stage: ${{ steps.branch-check.outputs.stage }}
-      node: ${{ steps.node-select.outputs.node }}
-      replica-count: ${{ steps.replica-count.outputs.count }}
+      node: ${{ steps.node-replica.outputs.node }}
+      replica-count: ${{ steps.node-replica.outputs.count }}
     steps:
       - name: Set stage by branch
         id: branch-check
@@ -95,28 +95,22 @@ jobs:
           else
             echo "stage=none" >> $GITHUB_OUTPUT
           fi
-      - name: Evaluate number of replicas
-        id: replica-count
+      - name: Select node and replica count
+        id: node-replica
         run: |
           if [ "${{ steps.branch-check.outputs.stage }}" = "prd" ]; then
             echo "count=2" >> $GITHUB_OUTPUT
-          else
-            echo "count=1" >> $GITHUB_OUTPUT
-          fi
-      - name: Select node
-        id: node-select
-        run: |
-          if [ "${{ steps.branch-check.outputs.stage }}" = "prd" ]; then
             echo "node=prd" >> $GITHUB_OUTPUT
           else
-            echo "node=dev" >> $GITHUB_OUTPUT
+            echo "count=1" >> $GITHUB_OUTPUT
+            echo "node=prd" >> $GITHUB_OUTPUT
           fi
 
       - name: Print stage with replicas count
         run: |
           echo "Stage for branch '${{ github.ref }}' \
-          is '${{ steps.branch_check.outputs.stage }}' with '${{ steps.replica-count.outputs.count }}' replicas
-          echo "Selecting node '${{ steps.node-select.outputs.node }}'
+          is '${{ steps.branch-check.outputs.stage }}' with '${{ steps.node-replica.outputs.count }}' replicas
+          echo "Selecting node '${{ steps.node-replica.outputs.node }}'
 
   #  #  #Build
   #  build:
@@ -145,7 +139,7 @@ jobs:
   #
   #  # Build and push to registry
   #  push-to-registry:
-  #    needs: [ build, preparation ]
+  #    needs: [ build, deploy-preparation ]
   #    name: Push Docker image to Docker Hub
   #    runs-on: ubuntu-latest
   #    steps:
@@ -202,7 +196,7 @@ jobs:
   #
   # Deploy
 #  deploy:
-#    needs: [ push-to-registry, preparation ]
+#    needs: [ push-to-registry, deploy-preparation ]
 #    runs-on: ubuntu-latest
 #    steps:
 #      - name: Checkout
@@ -227,15 +221,15 @@ jobs:
 #      - name: Edit kuberetes files
 #        run: |
 #          sed -i -e "s/\${GIT_SHA}/${{ github.sha }}/g" \
-#          -e "s/\${STAGE}/${{ needs.preparation.outputs.stage }}/g" \
-#          -e "s/\${REPLICAS}/${{ needs.preparation.outputs.replica-count }}/g" \
-#          -e "s/\${NODE}/${{ needs.preparation.outputs.node }}/g" kubernetes/*.yml
+#          -e "s/\${STAGE}/${{ needs.deploy-preparation.outputs.stage }}/g" \
+#          -e "s/\${REPLICAS}/${{ needs.deploy-preparation.outputs.replica-count }}/g" \
+#          -e "s/\${NODE}/${{ needs.deploy-preparation.outputs.node }}/g" kubernetes/*.yml
 #      # Deploy newly built changes to EKS cluster.
 #      - name: Deploy To Cluster
 #        shell: bash
 #        run: |
-#          kubectl -n ${{ needs.preparation.outputs.stage }} apply -f kubernetes/deployment.yml
-#          kubectl -n ${{ needs.preparation.outputs.stage }} apply -f kubernetes/service.yml
+#          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/deployment.yml
+#          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/service.yml
 
 #  webhook:
 #    needs: [ editorconfig-check, markdown-lint ]
