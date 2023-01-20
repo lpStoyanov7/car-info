@@ -23,29 +23,29 @@ jobs:
   #      - uses: actions/checkout@v2
   #      - run: npx markdownlint-cli **/*.md
 
-  check_db_scripts:
-    if: |
-      jq -r '.pull_request.changed_files[] | select(endswith(".sql"))' $GITHUB_EVENT_PATH | grep -q .
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_DB: db
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    steps:
-      - uses: actions/checkout@v2
-      - uses: joshuaavalon/flyway-action@v3.0.0
-        with:
-          url: jdbc:postgresql://postgres:5432/db
-          user: user
-          password: password
+  #  check_db_scripts:
+  #    if: |
+  #      jq -r '.pull_request.changed_files[] | select(endswith(".sql"))' $GITHUB_EVENT_PATH | grep -q .
+  #    runs-on: ubuntu-latest
+  #    services:
+  #      postgres:
+  #        image: postgres
+  #        env:
+  #          POSTGRES_DB: db
+  #          POSTGRES_USER: user
+  #          POSTGRES_PASSWORD: password
+  #        options: >-
+  #          --health-cmd pg_isready
+  #          --health-interval 10s
+  #          --health-timeout 5s
+  #          --health-retries 5
+  #    steps:
+  #      - uses: actions/checkout@v2
+  #      - uses: joshuaavalon/flyway-action@v3.0.0
+  #        with:
+  #          url: jdbc:postgresql://postgres:5432/db
+  #          user: user
+  #          password: password
 
   #  unit_tests:
   #    name: Quality check
@@ -182,22 +182,6 @@ jobs:
         with:
           name: jar-artifact
           path: target/
-      #      - name: Build, tag, and push image to Amazon ECR
-      #        id: build-image
-      #        env:
-      #          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #          ECR_REPOSITORY: car-info
-      #          IMAGE_TAG: ${{ github.sha }}
-      #        run: |
-      #          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-      #          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-      #          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-      #      - name: Download Build Artifacts
-      #        uses: actions/download-artifact@v1
-      #        with:
-      #          name: jar-artifact
-      #          path: target/
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
