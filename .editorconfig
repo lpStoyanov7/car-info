@@ -249,3 +249,9 @@ ij_java_while_on_new_line = false
 ij_java_wrap_comments = true
 ij_java_wrap_first_method_in_call_chain = false
 ij_java_wrap_long_lines = false
+
+[{*.jhm,*.xjb,*.rng,*.wsdd,*.wsdl,*.fxml,*.bpmn,*.pom,*.xslt,*.jrxml,*.ant,*.xul,*.xsl,*.xsd,*.tld,*.jnlp,*.wadl,*.xml}]
+ij_continuation_indent_size = 2
+ij_xml_block_comment_at_first_column = true
+ij_xml_keep_indents_on_empty_lines = false
+ij_xml_line_comment_at_first_column = true

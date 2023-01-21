@@ -2,10 +2,15 @@ name: Pipeline
 
 on:
   push:
-    branches: [ main, staging, develop ]
-# pull_request:
-#   types: [opened, synchronize, reopened]
-#   branches: [main, release/**, develop-*]
+    branches:
+      - main
+      - develop
+      - staging
+  pull_request:
+    branches:
+      - main
+      - develop
+      - staging
 
 jobs:
   editorconfig-check:
@@ -90,7 +95,11 @@ jobs:
   deploy-preparation:
     needs: [ build, unit-tests, markdown-lint, editorconfig-check, check-db-scripts ]
     name: Deploy preparation
-    if: always() && !contains(needs.*.result, 'failure')
+    if: always() && !contains(needs.*.result, 'failure') && contains('
+      refs/heads/develop
+      refs/heads/staging
+      refs/heads/main
+      ', github.ref)
     runs-on: ubuntu-latest
     outputs:
       stage: ${{ steps.branch-check.outputs.stage }}
@@ -103,12 +112,10 @@ jobs:
           echo "Running on branch ${{ github.ref }}"
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             echo "stage=prd" >> $GITHUB_OUTPUT
-          elif [ "${{ github.ref }}" = "refs/heads/release" ]; then
+          elif [ "${{ github.ref }}" = "refs/heads/staging" ]; then
             echo "stage=qas" >> $GITHUB_OUTPUT
           elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
             echo "stage=dev" >> $GITHUB_OUTPUT
-          else
-            echo "stage=none" >> $GITHUB_OUTPUT
           fi
       - name: Select node and replica count
         id: node-replica
@@ -118,7 +125,7 @@ jobs:
             echo "node=prd" >> $GITHUB_OUTPUT
           else
             echo "count=1" >> $GITHUB_OUTPUT
-            echo "node=prd" >> $GITHUB_OUTPUT
+            echo "node=dev" >> $GITHUB_OUTPUT
           fi
       - name: Print stage with replicas count
         run: |
@@ -130,6 +137,11 @@ jobs:
   build:
     name: Building application
     runs-on: ubuntu-latest
+    if: contains('
+      refs/heads/develop
+      refs/heads/staging
+      refs/heads/main
+      ', github.ref)
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -154,7 +166,11 @@ jobs:
     needs: [ build, unit-tests, markdown-lint, editorconfig-check, check-db-scripts ]
     name: Push image to Docker Hub
     runs-on: ubuntu-latest
-    if: always() && !contains(needs.*.result, 'failure')
+    if: always() && !contains(needs.*.result, 'failure') && contains('
+      refs/heads/develop
+      refs/heads/staging
+      refs/heads/main
+      ', github.ref)
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -200,7 +216,11 @@ jobs:
     name: Deploying application
     needs: [ push-to-registry, deploy-preparation ]
     runs-on: ubuntu-latest
-    if: always() && !contains(needs.*.result, 'failure')
+    if: always() && !contains(needs.*.result, 'failure') && contains('
+      refs/heads/develop
+      refs/heads/staging
+      refs/heads/main
+      ', github.ref)
     steps:
       - name: Checkout
         uses: actions/checkout@v2
