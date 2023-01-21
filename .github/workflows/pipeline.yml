@@ -137,6 +137,11 @@ jobs:
   build:
     name: Building application
     runs-on: ubuntu-latest
+    if: contains('
+      refs/heads/develop
+      refs/heads/staging
+      refs/heads/main
+      ', github.ref)
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
