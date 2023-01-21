@@ -216,7 +216,11 @@ jobs:
     name: Deploying application
     needs: [ push-to-registry, deploy-preparation ]
     runs-on: ubuntu-latest
-    if: always() && contains(needs.*.result, 'success')
+    if: always() && !contains(needs.*.result, 'failure') && contains('
+      refs/heads/develop
+      refs/heads/staging
+      refs/heads/main
+      ', github.ref)
     steps:
       - name: Checkout
         uses: actions/checkout@v2
