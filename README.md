@@ -7,14 +7,18 @@ about a particular car as it can. Name of manufacturer, different engine
 options, different models and so on.
 
 The first phase of the application is really simple. We only have the
-possibility to show the available engines. Url here:
+possibility to show the available engines.
+
+[Production url](http://a12cabdc8828a4b7d8d4160fef0c9515-1563976219.eu-west-1.elb.amazonaws.com/api/v1/engines)
 
 Currently we have new features being developed. We can now select to display
 more info about particular engine (for the purpose of the demo we are not really
 showing more information but rather we show that this version supports the new
 functionality to show info only for one engine by id).
 
-[Dev url](http://a437dc73cfbc942a08cda5681087b4d1-1703980411.eu-west-1.elb.amazonaws.com/api/v1/engines/2)
+[Devevelopment url](http://a437dc73cfbc942a08cda5681087b4d1-1703980411.eu-west-1.elb.amazonaws.com/api/v1/engines)
+
+[Devevelopment additional url](http://a437dc73cfbc942a08cda5681087b4d1-1703980411.eu-west-1.elb.amazonaws.com/api/v1/engines/1)
 
 ## Prerequisites
 
@@ -47,37 +51,15 @@ staging environment. Both nodes should have different labels. Use the following:
 
 ## Branching strategy
 
-In this example we are using the feature based flow. We have 3 environments on 3
-different protected branches:
-
-- development (dev) - `develop`
-- staging (qas) - `staging`
-- production (prd) - `main`
-
-Push to the branch is only allowed after successful pull request with at least 1
-approval. Only the owner of the repository has rights to override those rules
-and push directly to those branches if it is needed.
-
-`staging` and `main` usually have the production version of the application.
-
-A new feature is always started from the `develop` branch and it usually is the
-latest but not the most stable version.
-
-When the new version of the application is ready the `develop` is merged
-into `staging` branch.
-
-When the `staging` is properly tested we can proceed with actual release
-or `staging` merged in `main`.
-
-Bugs on the current version are tested and fixed on `staging`. When properly
-tested again `staging`
-is merged in `main`. After that `staging` is also merged into `develop`.
+Please check [Contribution guidelines for this project](CONTRIBUTING.md)
 
 ## CI/CD pipeline
 
 When a push against one of the 3 main branches (*check Branching strategy*) is
 made it triggers the main workflow. We can separate the different jobs in 5
 logical categories (not really in sequential order):
+
+![Pipeline](/assets/pipeline.png)
 
 - Test phase
 - Building phase
@@ -86,6 +68,8 @@ logical categories (not really in sequential order):
 - Notification to MS Teams channel
 
 When a pull request is created only the test phase is executed.
+
+![Pull request](/assets/pr.png)
 
 ### Test phase
 
@@ -100,7 +84,9 @@ We have the following verifications in the test phase:
   action)
 - SonnarCloud integration
 - Snyk integration
-- Scan docker image for vulnerabilities
+- Scan docker image for vulnerabilities (disabled for the demo)
+
+![Sonarcloud](/assets/sonar.png)
 
 ### Building phase
 
@@ -128,3 +114,5 @@ This job runs always. It sends notification about which jobs are successful and
 which not. As overall status it checks if there is a failed job. This status is
 chosen based on the particular workflow where we can have successful status when
 some jobs are skipped (by design).
+
+![Teams notification](/assets/notification.png)
