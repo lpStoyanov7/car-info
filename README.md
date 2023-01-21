@@ -49,6 +49,10 @@ staging environment. Both nodes should have different labels. Use the following:
 - environment=dev (for dev and staging)
 - environment=prd (for prd)
 
+Interesting thing to note: On production environment the application runs on 2
+replicas, while on dev and staging it is only 1. At the moment it can be 
+configured only in the workflow.
+
 ## Branching strategy
 
 Please check [Contribution guidelines for this project](CONTRIBUTING.md)
@@ -81,10 +85,12 @@ We have the following verifications in the test phase:
 - Check if there are new sql files. If so then a new job checks if the database
   changes can be successfully applied.
 - Running unit tests and display result directly in Git (using Test Report
-  action)
-- SonnarCloud integration
+  action). See following picture.
+- SonarCloud integration
 - Snyk integration
 - Scan docker image for vulnerabilities (disabled for the demo)
+
+![Test report](/assets/report.png)
 
 ![Sonarcloud](/assets/sonar.png)
 
