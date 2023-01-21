@@ -27,4 +27,3 @@ create table tbl_car
         foreign key (manufacturer_id)
             REFERENCES tbl_manufacturer (id)
 );
-
