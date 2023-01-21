@@ -37,8 +37,8 @@ public class EngineController {
     return engineService.getEngines();
   }
 
-  @GetMapping("/{id}")
-  public Engine getById(@PathVariable int id) {
-    return engineService.getById(id);
-  }
+//  @GetMapping("/{id}")
+//  public Engine getById(@PathVariable int id) {
+//    return engineService.getById(id);
+//  }
 }
