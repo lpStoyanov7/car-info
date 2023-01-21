@@ -250,25 +250,6 @@ ij_java_wrap_comments = true
 ij_java_wrap_first_method_in_call_chain = false
 ij_java_wrap_long_lines = false
 
-[*.md]
-charset = utf-8
-insert_final_newline = false
-max_line_length = 80
-# charset = utf-8
-# end_of_line = lf
-# indent_size = 2
-# indent_style = space
-# insert_final_newline = false
-# max_line_length = 100
-# tab_width = 2
-# ij_continuation_indent_size = 4
-# ij_formatter_off_tag = @formatter:off
-# ij_formatter_on_tag = @formatter:on
-# ij_formatter_tags_enabled = false
-# ij_smart_tabs = false
-# ij_wrap_on_typing = false
-
-
 [{*.jhm,*.xjb,*.rng,*.wsdd,*.wsdl,*.fxml,*.bpmn,*.pom,*.xslt,*.jrxml,*.ant,*.xul,*.xsl,*.xsd,*.tld,*.jnlp,*.wadl,*.xml}]
 ij_continuation_indent_size = 2
 ij_xml_block_comment_at_first_column = true
