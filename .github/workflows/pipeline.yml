@@ -249,8 +249,8 @@ jobs:
       - name: Deploy To Cluster
         shell: bash
         run: |
-          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/*.yml
-#          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/service.yml
+          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/deployment.yml
+          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/service.yml
 
   webhook:
     name: MS Teams Notification
