@@ -12,13 +12,6 @@ on:
       - develop
       - staging
 
-env:
-  SHOULD_DEPLOY: ${{ contains('
-    refs/heads/develop
-    refs/heads/staging
-    refs/heads/main
-    ', github.ref) }}
-
 jobs:
   editorconfig-check:
     name: Check code style
@@ -102,12 +95,11 @@ jobs:
   deploy-preparation:
     needs: [ build, unit-tests, markdown-lint, editorconfig-check, check-db-scripts ]
     name: Deploy preparation
-#    if: always() && !contains(needs.*.result, 'failure') && contains('
-#      refs/heads/develop
-#      refs/heads/staging
-#      refs/heads/main
-#      ', github.ref)
-    if: always() && !contains(needs.*.result, 'failure') && ${{ env.SHOULD_DEPLOY == 'true' }}
+    if: always() && !contains(needs.*.result, 'failure') && contains('
+      refs/heads/develop
+      refs/heads/staging
+      refs/heads/main
+      ', github.ref)
     runs-on: ubuntu-latest
     outputs:
       stage: ${{ steps.branch-check.outputs.stage }}
@@ -258,7 +250,7 @@ jobs:
         shell: bash
         run: |
           kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/*.yml
-  #          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/service.yml
+#          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/service.yml
 
   webhook:
     name: MS Teams Notification
