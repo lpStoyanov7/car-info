@@ -50,7 +50,7 @@ staging environment. Both nodes should have different labels. Use the following:
 - environment=prd (for prd)
 
 Interesting thing to note: On production environment the application runs on 2
-replicas, while on dev and staging it is only 1. At the moment it can be 
+replicas, while on dev and staging it is only 1. At the moment it can be
 configured only in the workflow.
 
 ## Branching strategy
