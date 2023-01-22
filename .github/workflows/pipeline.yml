@@ -12,6 +12,13 @@ on:
       - develop
       - staging
 
+env:
+  SHOULD_DEPLOY: ${{ contains('
+    refs/heads/develop
+    refs/heads/staging
+    refs/heads/main
+    ', github.ref) }}
+
 jobs:
   editorconfig-check:
     name: Check code style
@@ -95,11 +102,12 @@ jobs:
   deploy-preparation:
     needs: [ build, unit-tests, markdown-lint, editorconfig-check, check-db-scripts ]
     name: Deploy preparation
-    if: always() && !contains(needs.*.result, 'failure') && contains('
-      refs/heads/develop
-      refs/heads/staging
-      refs/heads/main
-      ', github.ref)
+#    if: always() && !contains(needs.*.result, 'failure') && contains('
+#      refs/heads/develop
+#      refs/heads/staging
+#      refs/heads/main
+#      ', github.ref)
+    if: always() && !contains(needs.*.result, 'failure') && ${{ env.SHOULD_DEPLOY == 'true' }}
     runs-on: ubuntu-latest
     outputs:
       stage: ${{ steps.branch-check.outputs.stage }}
@@ -211,7 +219,6 @@ jobs:
   #          vuln-type: "os,library"
   #          severity: "CRITICAL,HIGH"
   #
-  # Deploy
   deploy:
     name: Deploying application
     needs: [ push-to-registry, deploy-preparation ]
@@ -234,8 +241,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
-      - name: Check if git sha is the same
-        run: echo 'Gitsha - ${{ github.sha }}'
         # The following command will update the kube config file with our cluster information.
         # It will use the credentials exported by the previous action.
       - name: Update KubeConfig
@@ -252,8 +257,8 @@ jobs:
       - name: Deploy To Cluster
         shell: bash
         run: |
-          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/deployment.yml
-          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/service.yml
+          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/*.yml
+  #          kubectl -n ${{ needs.deploy-preparation.outputs.stage }} apply -f kubernetes/service.yml
 
   webhook:
     name: MS Teams Notification
